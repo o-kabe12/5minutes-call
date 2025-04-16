@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && next export",
     "start": "next start",
     "lint": "next lint"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "1日1回、パスコードを使って5分間だけ通話できるWebアプリケーション。",
+  "description": "パスコードを使って5分間だけ通話できるWebアプリケーション。",
   "dependencies": {
     "@types/node": "^22.14.0",
     "@types/react": "^19.1.0",

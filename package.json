@@ -1,0 +1,33 @@
+{
+  "name": "5minutes-call",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "1日1回、パスコードを使って5分間だけ通話できるWebアプリケーション。",
+  "dependencies": {
+    "@types/node": "^22.14.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.1",
+    "@types/simple-peer": "^9.11.8",
+    "next": "^15.2.4",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "simple-peer": "^9.11.1",
+    "typescript": "^5.8.2"
+  },
+  "main": "next.config.js",
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.1",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.3",
+    "postcss-cli": "^11.0.1",
+    "tailwindcss": "^4.1.1"
+  }
+}

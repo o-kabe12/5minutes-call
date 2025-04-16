@@ -6,7 +6,6 @@ export function connectToSignalingServer(passcode: string): {
   const socket = new WebSocket(`wss://5minutes-call.koo710128.workers.dev/room/${passcode}`);
 
   const listeners: ((msg: any) => void)[] = [];
-  console.log('WebSocket状態:', socket.readyState);
 
   socket.addEventListener('message', (event) => {
     try {
@@ -26,15 +25,21 @@ export function connectToSignalingServer(passcode: string): {
   });
 
   socket.addEventListener('error', (err) => {
-    console.error('❌ WebSocketエラー:', err, err.target);
+    console.error('❌ WebSocketエラー:', err);
   });
 
   const send = (message: any) => {
+    const enrichedMessage = {
+      ...message,
+      roomId: passcode
+    };
+    const json = JSON.stringify(enrichedMessage);
+
     if (socket.readyState === WebSocket.OPEN) {
-      socket.send(JSON.stringify(message));
+      socket.send(json);
     } else {
       socket.addEventListener('open', () => {
-        socket.send(JSON.stringify(message));
+        socket.send(json);
       });
     }
   };

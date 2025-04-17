@@ -10,6 +10,7 @@ export function connectToSignalingServer(passcode: string): {
   socket.addEventListener('message', (event) => {
     try {
       const data = JSON.parse(event.data);
+      console.log('📩 signaling 受信メッセージ:', data);
       listeners.forEach((listener) => listener(data));
     } catch (err) {
       console.error('受信メッセージのパースエラー:', err);
@@ -34,6 +35,7 @@ export function connectToSignalingServer(passcode: string): {
       roomId: passcode
     };
     const json = JSON.stringify(enrichedMessage);
+    console.log('📤 WebSocket送信:', enrichedMessage);
 
     if (socket.readyState === WebSocket.OPEN) {
       socket.send(json);

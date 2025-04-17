@@ -32,6 +32,7 @@ export async function setupWebRTC(passcode: string, signaling: Signaling): Promi
   });
 
   peer.on('signal', (data) => {
+    console.log('📤 自分の signal を送信:', data);
     signaling.send({ type: 'signal', data });
   });
 
@@ -45,7 +46,9 @@ export async function setupWebRTC(passcode: string, signaling: Signaling): Promi
   });
 
   signaling.onMessage((message) => {
+    console.log('📨 signaling からの受信:', message);
     if (message.type === 'signal') {
+      console.log('📥 peer.signal に渡す:', message.data); 
       peer.signal(message.data);
       signalingState = 'connecting';
     }

@@ -68,7 +68,11 @@ export async function setupWebRTC(passcode: string, signaling: Signaling): Promi
 
   signaling.onMessage((message) => {
     console.log('📨 signaling からの受信:', message);
-    if (message.type === 'signal' && message.data) {
+    
+    if (message.type === 'connected') {
+      console.log('✅ シグナリングサーバーに接続しました: ルームID', message.roomId);
+    }
+    else if (message.type === 'signal' && message.data) {
       try {
         console.log('📥 peer.signal に渡す:', message.data);
         peer.signal(message.data);

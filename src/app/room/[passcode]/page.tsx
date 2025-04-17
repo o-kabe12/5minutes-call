@@ -28,8 +28,6 @@ export default function RoomPage() {
         const { socket, send, onMessage } = connectToSignalingServer(passcode);
 
         onMessage((message) => {
-          console.log('📨 受信したメッセージ:', message);
-
           switch (message.type) {
             case 'participants':
               console.log('👥 現在の参加者数:', message.count);

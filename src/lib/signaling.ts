@@ -10,24 +10,24 @@ export function connectToSignalingServer(passcode: string): {
   socket.addEventListener('message', (event) => {
     try {
       const data = JSON.parse(event.data);
-      console.log('📩 signaling 受信メッセージ:', data);
+      // console.log('📩 signaling 受信メッセージ:', data);
       listeners.forEach((listener) => listener(data));
     } catch (err) {
-      console.error('受信メッセージのパースエラー:', err);
+      // console.error('受信メッセージのパースエラー:', err);
     }
   });
 
-  socket.addEventListener('open', () => {
-    console.log('✅ WebSocket接続が確立しました');
-  });
+  // socket.addEventListener('open', () => {
+  //   console.log('✅ WebSocket接続が確立しました');
+  // });
 
-  socket.addEventListener('close', () => {
-    console.log('🔌 WebSocket接続が切断されました');
-  });
+  // socket.addEventListener('close', () => {
+  //   console.log('🔌 WebSocket接続が切断されました');
+  // });
 
-  socket.addEventListener('error', (err) => {
-    console.error('❌ WebSocketエラー:', err);
-  });
+  // socket.addEventListener('error', (err) => {
+  //   console.error('❌ WebSocketエラー:', err);
+  // });
 
   const send = (message: any) => {
     const enrichedMessage = {

@@ -20,13 +20,19 @@ export async function setupWebRTC(passcode: string, signaling: Signaling): Promi
   const localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
   const remoteStream = new MediaStream();
 
+  function updateState(newState: SignalingState) {
+    signalingState = newState;
+  }
+
   const peer = new SimplePeer({
     initiator: isInitiator(passcode),
-    trickle: false,
+    trickle: true,
     stream: localStream,
     config: {
       iceServers: [
         { urls: 'stun:stun.l.google.com:19302' },
+        { urls: 'stun:stun1.l.google.com:19302' },
+        { urls: 'stun:stun2.l.google.com:19302' },
       ],
     },
   });
@@ -43,16 +49,44 @@ export async function setupWebRTC(passcode: string, signaling: Signaling): Promi
   peer.on('connect', () => {
     console.log('✅ WebRTC: P2P接続確立しました');
     signalingState = 'connected';
+    updateState('connected');
+  });
+
+  peer.on('error', (err) => {
+    console.error('❌ WebRTC エラー:', err);
+    signalingState = 'error';
+  });
+  
+  peer.on('close', () => {
+    console.log('❌ WebRTC: 接続が閉じられました');
+    signalingState = 'disconnected';
+  });
+  
+  peer.on('iceStateChange', (state) => {
+    console.log('ℹ️ ICE状態変更:', state);
   });
 
   signaling.onMessage((message) => {
     console.log('📨 signaling からの受信:', message);
-    if (message.type === 'signal') {
-      console.log('📥 peer.signal に渡す:', message.data); 
-      peer.signal(message.data);
-      signalingState = 'connecting';
+    if (message.type === 'signal' && message.data) {
+      try {
+        console.log('📥 peer.signal に渡す:', message.data);
+        peer.signal(message.data);
+        updateState('connecting');
+      } catch (e) {
+        console.error('❌ シグナリングデータ処理エラー:', e);
+        updateState('error');
+      }
+    } else {
+      console.warn('⚠️ 不明なメッセージタイプまたはデータなし:', message);
     }
   });
+
+  console.log('🎤 取得した音声トラック:', localStream.getAudioTracks());
+  localStream.getAudioTracks().forEach(track => {
+    console.log('🎤 音声トラック状態:', track.id, track.enabled, track.readyState);
+  });
+  
 
   return {
     peer,

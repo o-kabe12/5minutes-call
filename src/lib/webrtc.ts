@@ -24,19 +24,26 @@ export async function setupWebRTC(passcode: string, signaling: Signaling): Promi
     initiator: isInitiator(passcode),
     trickle: false,
     stream: localStream,
+    config: {
+      iceServers: [
+        { urls: 'stun:stun.l.google.com:19302' },
+      ],
+    },
   });
 
-  // Peerからシグナリングデータを受け取ったら送信
   peer.on('signal', (data) => {
     signaling.send({ type: 'signal', data });
   });
 
-  // 相手からのストリームを受信したら、remoteStreamに追加
   peer.on('stream', (stream) => {
     stream.getTracks().forEach((track) => remoteStream.addTrack(track));
   });
 
-  // シグナリングメッセージを受け取ったら、peer.signal() に渡す
+  peer.on('connect', () => {
+    console.log('✅ WebRTC: P2P接続確立しました');
+    signalingState = 'connected';
+  });
+
   signaling.onMessage((message) => {
     if (message.type === 'signal') {
       peer.signal(message.data);
@@ -52,7 +59,6 @@ export async function setupWebRTC(passcode: string, signaling: Signaling): Promi
   };
 }
 
-// ハッシュの最初の文字コードによって initiator を決定（簡易なルーム分け）
 function isInitiator(passcode: string): boolean {
   const firstChar = passcode.charCodeAt(0);
   return firstChar % 2 === 0;
